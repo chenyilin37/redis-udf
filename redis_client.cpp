@@ -383,10 +383,10 @@ RedisClient *init_client_if_isnull()
         const char * c_pass = getenv("REDID_PASS");
         //string_type host = "changhua0208.cn";
         if(!c_host)
-            c_host = "changhua0208.cn";
+            c_host = "localhost";
         _client = new RedisClient(c_host,6379);
         if(!c_pass)
-        		c_pass = "changhua.jiang";
+        		c_pass = "foobared";
         _client->auth(c_pass);
     }
     return _client;
