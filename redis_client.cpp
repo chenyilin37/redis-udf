@@ -275,8 +275,10 @@ void RedisClient::send_(const string_type & msg)
   std::cout<< "send cmd "<<msg<<std::endl;
 #endif
 
-  if (anetWrite(socket_, const_cast<char *>(msg.data()), msg.size()) == -1)
+  if (anetWrite(socket_, const_cast<char *>(msg.data()), msg.size()) == -1){
+  	_client = NULL;
     throw connection_error(strerror(errno));
+  }
 }
 
 int_type RedisClient::recv_bulk_reply_(char prefix)
@@ -381,7 +383,7 @@ RedisClient *init_client_if_isnull()
 {
     if(!_client){
         const char* c_host = getenv("REDIS_HOST"); // 获取操作系统变量
-        const char * c_pass = getenv("REDID_PASS");
+        const char* c_pass = getenv("REDID_PASS");
         //string_type host = "changhua0208.cn";
         if(!c_host)
             c_host = "localhost";

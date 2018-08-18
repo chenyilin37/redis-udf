@@ -50,7 +50,7 @@ dependence : boost mysql
    DROP FUNCTION IF EXISTS `redis_getset`; create function redis_getset returns string soname 'myredis.so';
 
 
-## 测试
+## 测试UDF
    启动mysql控制台
    mysql>SELECT redis_set('foo','bared');    
 			+--------------------------+       
@@ -62,8 +62,64 @@ dependence : boost mysql
 			    
    mysql>SELECT redis_get('foo');
    
-   
+ 
+ ## 通过MySQL触发器刷新Redis
+     借助触发器监听INSERT、UPDATE、DELETE等基本操作,实现自动调用UDF
+ 
+ ### 常见一个表 
+     mysql> SELECT * FROM Student;   
+     +----------+---------+------+------+---------+   
+     | Sid      | Sname   | Sage | Sgen | Sdept   |   
+     +----------+---------+------+------+---------+   
+     | 09388123 | Lucy    |   18 | F    | AS2-123 |   
+     | 09388165 | Rose    |   19 | F    | SS3-205 |   
+     | 09388308 | zhsuiy  |   19 | F    | MD8-208 |   
+     +----------+---------+------+------+---------+   
+     3 rows in set (0.00 sec)   
+     
+### 定义一个触发器     
+    mysql  > DELIMITER $   
+        > CREATE TRIGGER tg_student    
+        > AFTER INSERT on Student    
+        > FOR EACH ROW    
+        > BEGIN   
+        > SET @id = (SELECT redis_hset(CONCAT('stu_', new.Sid), 'id', CAST(new.Sid AS CHAR(8))));   
+        > SET @name = (SELECT redis_hset(CONCAT('stu_', new.Sid), 'name', CAST(new.Sname AS CHAR(20))));   
+        > Set @age = (SELECT redis_hset(CONCAT('stu_', new.Sid), 'age', CAST(new.Sage AS CHAR)));    
+        > Set @gender = (SELECT redis_hset(CONCAT('stu_', new.Sid), 'gender', CAST(new.Sgen AS CHAR)));    
+        > Set @dept = (SELECT redis_hset(CONCAT('stu_', new.Sid), 'department', CAST(new.Sdept AS CHAR(10))));       
+        > END $   
 
+### 插入一条记录
+    mysql> INSERT INTO Student VALUES('09388165', 'Rose', 19, 'F', 'SS3-205');    
+    Query OK, 1 row affected (0.27 sec)    
+ 
+     mysql> SELECT * FROM Student;    
+     +----------+---------+------+------+---------+    
+     | Sid      | Sname   | Sage | Sgen | Sdept   |    
+     +----------+---------+------+------+---------+    
+     | 09388123 | Lucy    |   18 | F    | AS2-123 |    
+     | 09388165 | Rose    |   19 | F    | SS3-205 |    
+     | 09388308 | zhsuiy  |   19 | F    | MD8-208 |    
+     | 09388318 | daemon  |   18 | M    | ZS4-630 |    
+     | 09388321 | David   |   20 | M    | ZS4-731 |    
+     | 09388334 | zhxilin |   20 | M    | ZS4-722 |    
+     +----------+---------+------+------+---------+    
+     6 rows in set (0.00 sec)    
+ 
+### 查看Redis的结果
+    127.0.0.1:6379> HGETALL stu_09388165    
+    1) "id"    
+    2) "09388165"    
+    3) "name"    
+    4) "Rose"    
+    5) "age"    
+    6) "19"    
+    7) "gender"    
+    8) "F"    
+    9) "department"    
+    10) "SS3-205"    
+ 
 ## 常见问题
 ### Broken pipe 
    查看redis.conf中timeout参数，如果没有设置或设置了数值，都改为0；
