@@ -39,6 +39,7 @@ source /etc/profile
 
 
 ## 在mysql中，执行下列脚本建立自定义函数
+
 DROP FUNCTION IF EXISTS `redis_set`; create function redis_set returns string soname 'myredis.so';
 DROP FUNCTION IF EXISTS `redis_get`; create function redis_get returns string soname 'myredis.so';
 DROP FUNCTION IF EXISTS `redis_del`; create function redis_del returns string soname 'myredis.so';
