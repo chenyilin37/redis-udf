@@ -40,13 +40,13 @@ dependence : boost mysql
 
 ## 在mysql中，执行下列脚本建立自定义函数
 
-   DROP FUNCTION IF EXISTS `redis_set`; create function redis_set returns string soname 'myredis.so';
-   DROP FUNCTION IF EXISTS `redis_get`; create function redis_get returns string soname 'myredis.so';
-   DROP FUNCTION IF EXISTS `redis_del`; create function redis_del returns string soname 'myredis.so';
-   DROP FUNCTION IF EXISTS `redis_hset`; create function redis_hset returns string soname 'myredis.so';
-   DROP FUNCTION IF EXISTS `redis_hget`; create function redis_hget returns string soname 'myredis.so';
-   DROP FUNCTION IF EXISTS `redis_hmget`; create function redis_hmget returns string soname 'myredis.so';
-   DROP FUNCTION IF EXISTS `redis_hmset`; create function redis_hmset returns string soname 'myredis.so';
+   DROP FUNCTION IF EXISTS `redis_set`; create function redis_set returns string soname 'myredis.so';   
+   DROP FUNCTION IF EXISTS `redis_get`; create function redis_get returns string soname 'myredis.so';   
+   DROP FUNCTION IF EXISTS `redis_del`; create function redis_del returns string soname 'myredis.so';   
+   DROP FUNCTION IF EXISTS `redis_hset`; create function redis_hset returns string soname 'myredis.so';   
+   DROP FUNCTION IF EXISTS `redis_hget`; create function redis_hget returns string soname 'myredis.so';   
+   DROP FUNCTION IF EXISTS `redis_hmget`; create function redis_hmget returns string soname 'myredis.so';   
+   DROP FUNCTION IF EXISTS `redis_hmset`; create function redis_hmset returns string soname 'myredis.so';   
    DROP FUNCTION IF EXISTS `redis_getset`; create function redis_getset returns string soname 'myredis.so';
 
 
