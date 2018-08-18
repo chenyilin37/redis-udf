@@ -52,14 +52,25 @@ dependence : boost mysql
 
 ## 测试
    启动mysql控制台
-   mysql>SELECT redis_set('foo','bared');
+   mysql>SELECT redis_set('foo','bared');    
+			+--------------------------+       
+			| redis_set('foo','bared') |    
+			+--------------------------+    
+			| connection was closed    |    
+			+--------------------------+    
+			1 row in set (0.00 sec)    
+			    
    mysql>SELECT redis_get('foo');
+   
+   
 
 ## 常见问题
-### Broken Pipe
-
+### Broken pipe 
+   查看redis.conf中timeout参数，如果没有设置或设置了数值，都改为0；
+   
 ### Connection Refused
 
+### connection was closed
 
 
 
