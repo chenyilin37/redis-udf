@@ -12,6 +12,7 @@ typedef std::string string_type;
 typedef std::vector<string_type> string_vector;
 typedef long int_type;
 // typedef long ssize_t;
+
 	
 class redis_error 
 {

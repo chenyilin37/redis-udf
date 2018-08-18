@@ -5,6 +5,7 @@
 #include "redis_client.h"
 using namespace std;
 
+
 #define SUCCESS "SUCCESS"
 #define RESULT(x) setResult(result,length,x)
 #define STRING_RESULT(x) setStringResult(result,length,x)
@@ -30,7 +31,7 @@ extern "C" void setStringResult(char* result,unsigned long * length,string_type 
 	setResult(result,length,c_retValue);
 }
 
-extern "C" char *hset(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
+extern "C" char *redis_hset(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
 	memset(result,0,sizeof(result));
 	if(!(args->args && args->args[0] && args->args[1] && args->args[2])){
       *is_null = 1;
@@ -48,11 +49,10 @@ extern "C" char *hset(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned l
  		STRING_RESULT(errMsg);
  		return result;
  	}
-  
 }
 
 
-extern "C" my_bool hset_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+extern "C" my_bool redis_hset_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
     if (3 != args->arg_count  || args->arg_type[0] != STRING_RESULT  || args->arg_type[1] != STRING_RESULT  || args->arg_type[2] != STRING_RESULT){ // hset(key, field, value) 需要三个参数
         strncpy(message, "please input 2 args and must be string, such as: hset('key', 'feild', 'value');", MYSQL_ERRMSG_SIZE);
@@ -66,9 +66,7 @@ extern "C" my_bool hset_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
     return 0;
 }
 
-
-
-extern "C" char *hget(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
+extern "C" char *redis_hget(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
 	memset(result,0,sizeof(result));
 	if(!(args->args && args->args[0] && args->args[1])){
       *is_null = 1;
@@ -89,7 +87,7 @@ extern "C" char *hget(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned l
 }
 
 
-extern "C" my_bool hget_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+extern "C" my_bool redis_hget_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
     if (2 != args->arg_count  || args->arg_type[0] != STRING_RESULT  || args->arg_type[1] != STRING_RESULT ){ // hset(key, field, value) 需要三个参数
         strncpy(message, "please input 3 args and must be string, such as: hget('key', 'feild');", MYSQL_ERRMSG_SIZE);
@@ -102,7 +100,7 @@ extern "C" my_bool hget_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
     return 0;
 }
 
-extern "C" char *del(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
+extern "C" char *redis_del(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
 	memset(result,0,sizeof(result));
 	if(!(args->args && args->args[0])){
       *is_null = 1;
@@ -123,7 +121,7 @@ extern "C" char *del(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned lo
 }
 
 
-extern "C" my_bool del_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+extern "C" my_bool redis_del_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
     if (1 != args->arg_count  || args->arg_type[0] != STRING_RESULT){ // hset(key, field, value) 需要三个参数
         strncpy(message, "please input 1 args and must be string, such as: del('key');", MYSQL_ERRMSG_SIZE);
@@ -136,7 +134,7 @@ extern "C" my_bool del_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 }
 
 
-extern "C" char *rset(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
+extern "C" char *redis_set(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
 	memset(result,0,sizeof(result));
 	if(!(args->args && args->args[0] && args->args[1])){
       *is_null = 1;
@@ -157,7 +155,7 @@ extern "C" char *rset(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned l
 }
 
 
-extern "C" my_bool rset_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+extern "C" my_bool redis_set_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
     if (2 != args->arg_count  || args->arg_type[0] != STRING_RESULT || args->arg_type[1] != STRING_RESULT){ // hset(key, field, value) 需要三个参数
         strncpy(message, "please input 2 args and must be string, such as: set('key','value');", MYSQL_ERRMSG_SIZE);
@@ -170,7 +168,7 @@ extern "C" my_bool rset_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 }
 
 
-extern "C" char *rget(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
+extern "C" char *redis_get(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
 	memset(result,0,sizeof(result));
 	if(!(args->args && args->args[0])){
       *is_null = 1;
@@ -191,7 +189,7 @@ extern "C" char *rget(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned l
 }
 
 
-extern "C" my_bool rget_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+extern "C" my_bool redis_get_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
     if (1 != args->arg_count  || args->arg_type[0] != STRING_RESULT ){ // hset(key, field, value) 需要三个参数
         strncpy(message, "please input 2 args and must be string, such as: get('key');", MYSQL_ERRMSG_SIZE);
@@ -202,7 +200,7 @@ extern "C" my_bool rget_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
     return 0;
 }
 
-extern "C" char *hmget(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
+extern "C" char *redis_hmget(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
 	memset(result,0,sizeof(result));
    try{
    	string_vector fields = string_vector();
@@ -240,7 +238,7 @@ extern "C" char *hmget(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned 
 }
 
 
-extern "C" my_bool hmget_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+extern "C" my_bool redis_hmget_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
     if (args->arg_count < 2 ){ // hset(key, field, value) 需要三个参数
         strncpy(message, "please input 2 or more args and must be string, such as: hmget('key',id1,id2...);", MYSQL_ERRMSG_SIZE);
@@ -255,7 +253,7 @@ extern "C" my_bool hmget_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 }
 
 
-extern "C" char *hmset(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
+extern "C" char *redis_hmset(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
 	memset(result,0,sizeof(result));
    try{
    	string_vector fields = string_vector();
@@ -284,7 +282,7 @@ extern "C" char *hmset(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned 
 }
 
 
-extern "C" my_bool hmset_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+extern "C" my_bool redis_hmset_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
     if (args->arg_count < 3 ){
         strncpy(message, "please input 3 or more args and must be string, such as: hmset('key',id1,value1,...);", MYSQL_ERRMSG_SIZE);
@@ -299,7 +297,7 @@ extern "C" my_bool hmset_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 }
 
 
-extern "C" char *getset(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
+extern "C" char *redis_getset(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
 	memset(result,0,sizeof(result));
 	if(!(args->args && args->args[0] && args->args[1])){
       *is_null = 1;
@@ -321,7 +319,7 @@ extern "C" char *getset(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned
 }
 
 
-extern "C" my_bool getset_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+extern "C" my_bool redis_getset_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
     if (2 != args->arg_count  || args->arg_type[0] != STRING_RESULT  || args->arg_type[1] != STRING_RESULT){ // hset(key, field, value) 需要三个参数
         strncpy(message, "please input 2 args and must be string, such as: getset('key', 'value');", MYSQL_ERRMSG_SIZE);
