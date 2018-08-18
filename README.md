@@ -128,6 +128,7 @@ dependence : boost mysql
 
 ### connection was closed
 
-
+## TODO
+兼容单引号
 
 

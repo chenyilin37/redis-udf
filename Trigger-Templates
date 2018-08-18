@@ -40,7 +40,7 @@ CREATE PROCEDURE student_UPDATE_REDIS
     in dept VARCHAR(8)
 ) 
 BEGIN
-	SET @tableId = 'stu';
+	SET @tableId = 'student';
 
     -- 更新缓存
 	SELECT CONCAT_WS('_', @tableId, id) into @NID;
@@ -64,7 +64,7 @@ CREATE PROCEDURE student_CLEAN_REDIS
     in name varchar(45)
 ) 
 BEGIN
-	SET @tableId = 'stu';
+	SET @tableId = 'student';
 	
   SELECT redis_del(CONCAT_WS('_', @tableId, id)) INTO @tmp ;   
   SELECT redis_del(CONCAT_WS('_', @tableId, name)) INTO @tmp ;
@@ -85,7 +85,6 @@ BEGIN
 	DECLARE age int;
 	DECLARE gen varchar(1);
 	DECLARE dept varchar(10);
-    
     
 	-- 声明游标
 	DECLARE records CURSOR
@@ -110,6 +109,12 @@ BEGIN
 	UNTIL done END REPEAT;
 	-- 关闭游标
 	CLOSE records;
+	
+	-- 在Redis中，表示该表已经缓存；日期时间数据用T分隔，用空格无法缓存
+	SELECT redis_hset(‘INIT_TABLES’, 'student',  DATE_FORMAT(NOW(), '%Y-%m-%dT%T')) INTO @tmp;  
+	
+	
+	
 END $
 
 DELIMITER ;

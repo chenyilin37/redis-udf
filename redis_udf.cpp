@@ -5,7 +5,6 @@
 #include "redis_client.h"
 using namespace std;
 
-
 #define SUCCESS "SUCCESS"
 #define RESULT(x) setResult(result,length,x)
 #define STRING_RESULT(x) setStringResult(result,length,x)
@@ -40,7 +39,7 @@ extern "C" char *redis_hset(UDF_INIT *initid, UDF_ARGS *args, char *result, unsi
    }
    try{
    	RedisClient *p_client = init_client_if_isnull();
-   	p_client->hset(args->args[0],args->args[1],args->args[2]);
+   	p_client->hset(args->args[0], args->args[1], args->args[2]);
    	RESULT(SUCCESS);
    	return result;
  	}
@@ -309,8 +308,7 @@ extern "C" char *redis_getset(UDF_INIT *initid, UDF_ARGS *args, char *result, un
    	string_type ret = p_client->getset(args->args[0],args->args[1]);
    	STRING_RESULT(ret);
    	return result;
- 	}
- 	catch(redis_error & e){
+ 	} catch(redis_error & e){
  		string errMsg(e);
  		STRING_RESULT(errMsg);
  		return result;
