@@ -11,14 +11,11 @@ DELIMITER $
 
 CREATE TRIGGER `student_AFTER_INSERT` AFTER INSERT ON `student` FOR EACH ROW
 BEGIN
-
   call student_UPDATE_REDIS(new.Sid, new.Sname, new.Sage, new.Sgen, new.Sdept);
-
 END $
 
 CREATE TRIGGER `student_AFTER_UPDATE` AFTER UPDATE ON `student` FOR EACH ROW
 BEGIN
-
    call student_CLEAN_REDIS(old.Sid, old.SName);
    call student_UPDATE_REDIS(new.Sid, new.Sname, new.Sage, new.Sgen, new.Sdept);
 END $
@@ -26,7 +23,6 @@ END $
 
 CREATE TRIGGER `student_AFTER_DELETE` AFTER DELETE ON `student` FOR EACH ROW
 BEGIN
-  
   call student_CLEAN_REDIS(old.Sid, old.SName);
 END $
 
@@ -64,7 +60,7 @@ CREATE PROCEDURE student_CLEAN_REDIS
     in name varchar(45)
 ) 
 BEGIN
-	SET @tableId = 'student';
+  SET @tableId = 'student';
 	
   SELECT redis_del(CONCAT_WS('_', @tableId, id)) INTO @tmp ;   
   SELECT redis_del(CONCAT_WS('_', @tableId, name)) INTO @tmp ;

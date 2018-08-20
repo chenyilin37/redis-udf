@@ -78,15 +78,22 @@ class RedisClient {
 
 		void           set(const string_type &,const string_type &);
 		string_type    get(const string_type &);
+		void           del(const string_type &);
+		string_type    getset(const string_type &,const string_type &);
 		
 		void           hset(const string_type &,const string_type &,const string_type &);
 		string_type    hget(const string_type &,const string_type &);
 		
 		void           hmset(const string_type &,const string_vector &,const string_vector &);
 		void           hmget(const string_type &,const string_vector &,string_vector &);
+		void           hdel(const string_type &,const string_vector &);
 		
-		string_type    getset(const string_type &,const string_type &);
-		void           del(const string_type &);
+		void           sadd(const string_type &,const string_vector &);
+		void           srem(const string_type &,const string_vector &);
+
+		void           zadd(const string_type &,const string_vector &,const string_vector &);
+		void           zrem(const string_type &,const string_vector &);
+
 		void           save();
 		void           bgsave();
 		

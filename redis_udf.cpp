@@ -251,6 +251,194 @@ extern "C" my_bool redis_hmget_init(UDF_INIT *initid, UDF_ARGS *args, char *mess
     return 0;
 }
 
+extern "C" char *redis_hdel(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
+	memset(result,0,sizeof(result));
+   try{
+   	string_vector fields = string_vector();
+   	for(int i = 1;i < args->arg_count;i++)
+   	{
+   		string element(args->args[i]);
+   		fields.push_back(element);
+   	}
+   	
+   	RedisClient *p_client = init_client_if_isnull();
+   	p_client->hdel(args->args[0],fields);
+   	RESULT(SUCCESS);
+  	return result;
+ 	}
+ 	catch(redis_error & e){
+ 		string errMsg(e);
+ 		STRING_RESULT(errMsg);
+ 		return result;
+ 	}
+}
+
+extern "C" my_bool redis_hdel_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
+    if (args->arg_count < 2 ){ // hset(key, field, value) 需要三个参数
+        strncpy(message, "please input 2 or more args and must be string, such as: hdel('key',id1,id2...);", MYSQL_ERRMSG_SIZE);
+        return -1;
+    }
+    for(int i = 0;i < args->arg_count;i++)
+    {
+    	args->arg_type[i] = STRING_RESULT;
+    }
+    initid->ptr       = NULL;
+    return 0;
+}
+
+extern "C" char *redis_sadd(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
+	memset(result,0,sizeof(result));
+   try{
+   	string_vector fields = string_vector();
+   	for(int i = 1;i < args->arg_count;i++)
+   	{
+   		string element(args->args[i]);
+   		fields.push_back(element);
+   	}
+   	
+   	RedisClient *p_client = init_client_if_isnull();
+   	p_client->sadd(args->args[0],fields);
+   	RESULT(SUCCESS);
+  	return result;
+ 	}
+ 	catch(redis_error & e){
+ 		string errMsg(e);
+ 		STRING_RESULT(errMsg);
+ 		return result;
+ 	}
+}
+
+extern "C" my_bool redis_sadd_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
+    if (args->arg_count < 2 ){ // hset(key, field, value) 需要三个参数
+        strncpy(message, "please input 2 or more args and must be string, such as: hdel('key',id1,id2...);", MYSQL_ERRMSG_SIZE);
+        return -1;
+    }
+    for(int i = 0;i < args->arg_count;i++)
+    {
+    	args->arg_type[i] = STRING_RESULT;
+    }
+    initid->ptr       = NULL;
+    return 0;
+}
+
+extern "C" char *redis_srem(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
+	memset(result,0,sizeof(result));
+   try{
+   	string_vector fields = string_vector();
+   	for(int i = 1;i < args->arg_count;i++)
+   	{
+   		string element(args->args[i]);
+   		fields.push_back(element);
+   	}
+   	
+   	RedisClient *p_client = init_client_if_isnull();
+   	p_client->srem(args->args[0],fields);
+   	RESULT(SUCCESS);
+  	return result;
+ 	}
+ 	catch(redis_error & e){
+ 		string errMsg(e);
+ 		STRING_RESULT(errMsg);
+ 		return result;
+ 	}
+}
+
+extern "C" my_bool redis_srem_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
+    if (args->arg_count < 2 ){ // hset(key, field, value) 需要三个参数
+        strncpy(message, "please input 2 or more args and must be string, such as: hdel('key',id1,id2...);", MYSQL_ERRMSG_SIZE);
+        return -1;
+    }
+    for(int i = 0;i < args->arg_count;i++)
+    {
+    	args->arg_type[i] = STRING_RESULT;
+    }
+    initid->ptr       = NULL;
+    return 0;
+}
+
+
+extern "C" char *redis_zadd(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
+	memset(result,0,sizeof(result));
+   try{
+   	string_vector fields = string_vector();
+   	string_vector values = string_vector();
+   	for(int i = 1;i < args->arg_count;i++)
+   	{
+   		string element(args->args[i]);
+   		if(i % 2 == 0){
+   			values.push_back(element);
+   		}
+   		else{
+   			fields.push_back(element);
+   		}
+   	}
+   	
+   	RedisClient *p_client = init_client_if_isnull();
+   	p_client->zadd(args->args[0],fields,values);
+   	RESULT(SUCCESS);
+  	return result;
+ 	}
+ 	catch(redis_error & e){
+ 		string errMsg(e);
+ 		STRING_RESULT(errMsg);
+ 		return result;
+ 	}
+}
+
+
+extern "C" my_bool redis_zadd_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
+    if (args->arg_count < 3 ){
+        strncpy(message, "please input 3 or more args and must be string, such as: zadd('key',id1,value1,...);", MYSQL_ERRMSG_SIZE);
+        return -1;
+    }
+    for(int i = 0;i < args->arg_count;i++)
+    {
+    	args->arg_type[i] = STRING_RESULT;
+    }
+    initid->ptr       = NULL;
+    return 0;
+}
+
+extern "C" char *redis_zrem(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
+	memset(result,0,sizeof(result));
+   try{
+   	string_vector fields = string_vector();
+   	for(int i = 1;i < args->arg_count;i++)
+   	{
+   		string element(args->args[i]);
+   		fields.push_back(element);
+   	}
+   	
+   	RedisClient *p_client = init_client_if_isnull();
+   	p_client->zrem(args->args[0],fields);
+   	RESULT(SUCCESS);
+  	return result;
+ 	}
+ 	catch(redis_error & e){
+ 		string errMsg(e);
+ 		STRING_RESULT(errMsg);
+ 		return result;
+ 	}
+}
+
+
+extern "C" my_bool redis_zrem_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
+    if (args->arg_count < 2 ){ // hset(key, field, value) 需要三个参数
+        strncpy(message, "please input 2 or more args and must be string, such as: hdel('key',id1,id2...);", MYSQL_ERRMSG_SIZE);
+        return -1;
+    }
+    for(int i = 0;i < args->arg_count;i++)
+    {
+    	args->arg_type[i] = STRING_RESULT;
+    }
+    initid->ptr       = NULL;
+    return 0;
+}
 
 extern "C" char *redis_hmset(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
 	memset(result,0,sizeof(result));

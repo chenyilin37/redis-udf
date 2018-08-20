@@ -195,7 +195,39 @@ void RedisClient::hmget(const string_type & key,const string_vector & fields,str
 	send_(makecmd("HMGET")<<key<<fields);
 	recv_multi_bulk_reply_(out);
 }
+
+void RedisClient::hdel(const string_type & key,const string_vector & fields){
+	send_(makecmd("HDEL")<<key<<fields);
+	recv_ok_reply_();
+}
+
+void RedisClient::sadd(const string_type & key,const string_vector & fields){
+	send_(makecmd("SADD")<<key<<fields);
+	recv_ok_reply_();
+}
 	
+void RedisClient::srem(const string_type & key,const string_vector & fields){
+	send_(makecmd("SREM")<<key<<fields);
+	recv_ok_reply_();
+}
+
+void RedisClient::zadd(const string_type & key,const string_vector & fields,const string_vector & values){
+	makecmd maker("ZADD");
+	maker << key;
+	if(fields.size() != values.size() || fields.size() <= 0){
+		throw protocol_error("invalid arguments");
+	}
+	for(int i = 0;i < fields.size();i++){
+		maker << fields[i] << values[i];
+	}
+	send_(maker);
+	recv_ok_reply_();
+}
+		
+void RedisClient::zrem(const string_type & key,const string_vector & fields){
+	send_(makecmd("ZREM")<<key<<fields);
+	recv_ok_reply_();
+}		
 string_type RedisClient::getset(const string_type & key,const string_type & value){
 	send_(makecmd("GETSET") << key << value);
 	return recv_bulk_reply_();

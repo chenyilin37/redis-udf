@@ -6,12 +6,17 @@ mysql:5.6
 
 dependence : boost mysql
 
-## 安装boos
+## 安装boost
 ### Ubuntu/Debian/Linux Mint
   sudo apt-get install libboost-all-dev
 
 ### Mac
   brew install boost
+
+
+sudo apt-get update #更新软件库
+sudo apt-get install mysql-server #安装mysql,期间如果要求输入密码， 那就输入吧. 
+sudo mysql -u root -p #登录mysql查看是否安装成功
 
 ## 添加mysql.h头文件
    安装mysql后，不一定有mysql.h头文件，需要另行安装；
@@ -43,11 +48,17 @@ dependence : boost mysql
    DROP FUNCTION IF EXISTS `redis_set`; create function redis_set returns string soname 'myredis.so';   
    DROP FUNCTION IF EXISTS `redis_get`; create function redis_get returns string soname 'myredis.so';   
    DROP FUNCTION IF EXISTS `redis_del`; create function redis_del returns string soname 'myredis.so';   
+   DROP FUNCTION IF EXISTS `redis_getset`; create function redis_getset returns string soname 'myredis.so';
    DROP FUNCTION IF EXISTS `redis_hset`; create function redis_hset returns string soname 'myredis.so';   
    DROP FUNCTION IF EXISTS `redis_hget`; create function redis_hget returns string soname 'myredis.so';   
    DROP FUNCTION IF EXISTS `redis_hmget`; create function redis_hmget returns string soname 'myredis.so';   
    DROP FUNCTION IF EXISTS `redis_hmset`; create function redis_hmset returns string soname 'myredis.so';   
-   DROP FUNCTION IF EXISTS `redis_getset`; create function redis_getset returns string soname 'myredis.so';
+   DROP FUNCTION IF EXISTS `redis_hdel`; create function redis_hdel returns string soname 'myredis.so';
+
+  DROP FUNCTION IF EXISTS `redis_sadd`; create function redis_sadd returns string soname 'myredis.so';
+  DROP FUNCTION IF EXISTS `redis_srem`; create function redis_srem returns string soname 'myredis.so';
+  DROP FUNCTION IF EXISTS `redis_zadd`; create function redis_zadd returns string soname 'myredis.so';
+  DROP FUNCTION IF EXISTS `redis_zrem`; create function redis_zrem returns string soname 'myredis.so';
 
 
 ## 测试UDF
