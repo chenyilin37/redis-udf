@@ -52,12 +52,12 @@ sudo mysql -u root -p #登录mysql查看是否安装成功
   DROP FUNCTION IF EXISTS `redis_hset`; create function redis_hset returns string soname 'mysqludf-redis.so';   
   DROP FUNCTION IF EXISTS `redis_hget`; create function redis_hget returns string soname 'mysqludf-redis.so';   
   DROP FUNCTION IF EXISTS `redis_hmget`; create function redis_hmget returns string soname 'mysqludf-redis.so';   
-  DROP FUNCTION IF EXISTS `redis_hmset`; create function redis_hmset returns string soname 'mysqludf-redis.so';   
-  DROP FUNCTION IF EXISTS `redis_hdel`; create function redis_hdel returns string soname 'mysqludf-redis.so';
-  DROP FUNCTION IF EXISTS `redis_sadd`; create function redis_sadd returns string soname 'mysqludf-redis.so';
-  DROP FUNCTION IF EXISTS `redis_srem`; create function redis_srem returns string soname 'mysqludf-redis.so';
-  DROP FUNCTION IF EXISTS `redis_zadd`; create function redis_zadd returns string soname 'mysqludf-redis.so';
-  DROP FUNCTION IF EXISTS `redis_zrem`; create function redis_zrem returns string soname 'mysqludf-redis.so';
+  DROP FUNCTION IF EXISTS `redis_hmset`; create function redis_hmset returns string soname 'mysqludf-redis.so';    
+  DROP FUNCTION IF EXISTS `redis_hdel`; create function redis_hdel returns string soname 'mysqludf-redis.so';   
+  DROP FUNCTION IF EXISTS `redis_sadd`; create function redis_sadd returns string soname 'mysqludf-redis.so';   
+  DROP FUNCTION IF EXISTS `redis_srem`; create function redis_srem returns string soname 'mysqludf-redis.so';    
+  DROP FUNCTION IF EXISTS `redis_zadd`; create function redis_zadd returns string soname 'mysqludf-redis.so';    
+  DROP FUNCTION IF EXISTS `redis_zrem`; create function redis_zrem returns string soname 'mysqludf-redis.so';     
 
   DROP FUNCTION IF EXISTS `lib_mysqludf_json_info`; create function lib_mysqludf_json_info returns string soname 'mysqludf-json.so';     
   DROP FUNCTION IF EXISTS `json_array`; create function json_array returns string soname 'mysqludf-json.so';     
