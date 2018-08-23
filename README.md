@@ -27,11 +27,11 @@ sudo mysql -u root -p #登录mysql查看是否安装成功
    yum install mysql-devel
 
 ## 编译
-   g++ -shared -o libmyredis.so -fPIC -I /usr/include/mysql -l boost_serialization -l boost_system -l boost_thread  anet.c redis_client.cpp redis_udf.cpp
+   g++ -shared -o myredis-udf.so -fPIC -I /usr/include/mysql -l boost_serialization -l boost_system -l boost_thread  anet.c redis_client.cpp redis_udf.cpp
 
 
-## 将编译出的libmyredis.so文件拷贝到mysql的插件目录下并授权
-   sudo cp libmyredis.so /usr/lib/mysql/plugin/ & sudo chmod 777 /usr/lib/mysql/plugin/libmyredis.so
+## 将编译出的myredis.so文件拷贝到mysql的插件目录下并授权
+   sudo cp myredis-udf.so /usr/lib/mysql/plugin/ & sudo chmod 777 /usr/lib/mysql/plugin/myredis-udf.so
 
 ## 设置环境变量
    在/etc/profile中，添加如下语句：

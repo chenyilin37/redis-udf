@@ -419,9 +419,8 @@ RedisClient *init_client_if_isnull()
         if(!c_host)
             c_host = "localhost";
         _client = new RedisClient(c_host,6379);
-        if(!c_pass)
-        		c_pass = "foobared";
-        _client->auth(c_pass);
+        if(c_pass)
+          _client->auth(c_pass);
     }
     return _client;
 }

@@ -312,7 +312,7 @@ extern "C" char *redis_sadd(UDF_INIT *initid, UDF_ARGS *args, char *result, unsi
 extern "C" my_bool redis_sadd_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
     if (args->arg_count < 2 ){ // hset(key, field, value) 需要三个参数
-        strncpy(message, "please input 2 or more args and must be string, such as: hdel('key',id1,id2...);", MYSQL_ERRMSG_SIZE);
+        strncpy(message, "please input 2 or more args and must be string, such as: sadd('key',id1,id2...);", MYSQL_ERRMSG_SIZE);
         return -1;
     }
     for(int i = 0;i < args->arg_count;i++)
@@ -348,7 +348,7 @@ extern "C" char *redis_srem(UDF_INIT *initid, UDF_ARGS *args, char *result, unsi
 extern "C" my_bool redis_srem_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
     if (args->arg_count < 2 ){ // hset(key, field, value) 需要三个参数
-        strncpy(message, "please input 2 or more args and must be string, such as: hdel('key',id1,id2...);", MYSQL_ERRMSG_SIZE);
+        strncpy(message, "please input 2 or more args and must be string, such as: srem('key',id1,id2...);", MYSQL_ERRMSG_SIZE);
         return -1;
     }
     for(int i = 0;i < args->arg_count;i++)
@@ -429,7 +429,7 @@ extern "C" char *redis_zrem(UDF_INIT *initid, UDF_ARGS *args, char *result, unsi
 extern "C" my_bool redis_zrem_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
 {
     if (args->arg_count < 2 ){ // hset(key, field, value) 需要三个参数
-        strncpy(message, "please input 2 or more args and must be string, such as: hdel('key',id1,id2...);", MYSQL_ERRMSG_SIZE);
+        strncpy(message, "please input 2 or more args and must be string, such as: zrem('key',id1,id2...);", MYSQL_ERRMSG_SIZE);
         return -1;
     }
     for(int i = 0;i < args->arg_count;i++)
