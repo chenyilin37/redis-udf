@@ -1,8 +1,8 @@
 # redis-udf
 
-redis_version:4.0.8
+redis_version:4.0.8+
 
-mysql:5.6
+mysql:5.6+
 
 dependence : boost mysql
 
@@ -140,6 +140,6 @@ sudo mysql -u root -p #登录mysql查看是否安装成功
 ### connection was closed
 
 ## TODO
-兼容单引号
+引号兼容
 
 
