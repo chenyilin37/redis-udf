@@ -30,7 +30,7 @@ sudo mysql -u root -p #登录mysql查看是否安装成功
    g++ -shared -o myredis-udf.so -fPIC -I /usr/include/mysql -l boost_serialization -l boost_system -l boost_thread  anet.c redis_client.cpp redis_udf.cpp
 
 
-## 将编译出的myredis.so文件拷贝到mysql的插件目录下并授权
+## 将编译出的mysqludf-redis.so文件拷贝到mysql的插件目录下并授权
    sudo cp myredis-udf.so /usr/lib/mysql/plugin/ & sudo chmod 777 /usr/lib/mysql/plugin/myredis-udf.so
 
 ## 设置环境变量
@@ -45,20 +45,26 @@ sudo mysql -u root -p #登录mysql查看是否安装成功
 
 ## 在mysql中，执行下列脚本建立自定义函数
 
-   DROP FUNCTION IF EXISTS `redis_set`; create function redis_set returns string soname 'myredis.so';   
-   DROP FUNCTION IF EXISTS `redis_get`; create function redis_get returns string soname 'myredis.so';   
-   DROP FUNCTION IF EXISTS `redis_del`; create function redis_del returns string soname 'myredis.so';   
-   DROP FUNCTION IF EXISTS `redis_getset`; create function redis_getset returns string soname 'myredis.so';
-   DROP FUNCTION IF EXISTS `redis_hset`; create function redis_hset returns string soname 'myredis.so';   
-   DROP FUNCTION IF EXISTS `redis_hget`; create function redis_hget returns string soname 'myredis.so';   
-   DROP FUNCTION IF EXISTS `redis_hmget`; create function redis_hmget returns string soname 'myredis.so';   
-   DROP FUNCTION IF EXISTS `redis_hmset`; create function redis_hmset returns string soname 'myredis.so';   
-   DROP FUNCTION IF EXISTS `redis_hdel`; create function redis_hdel returns string soname 'myredis.so';
+  DROP FUNCTION IF EXISTS `redis_set`; create function redis_set returns string soname 'mysqludf-redis.so';   
+  DROP FUNCTION IF EXISTS `redis_get`; create function redis_get returns string soname 'mysqludf-redis.so';   
+  DROP FUNCTION IF EXISTS `redis_del`; create function redis_del returns string soname 'mysqludf-redis.so';   
+  DROP FUNCTION IF EXISTS `redis_getset`; create function redis_getset returns string soname 'mysqludf-redis.so';
+  DROP FUNCTION IF EXISTS `redis_hset`; create function redis_hset returns string soname 'mysqludf-redis.so';   
+  DROP FUNCTION IF EXISTS `redis_hget`; create function redis_hget returns string soname 'mysqludf-redis.so';   
+  DROP FUNCTION IF EXISTS `redis_hmget`; create function redis_hmget returns string soname 'mysqludf-redis.so';   
+  DROP FUNCTION IF EXISTS `redis_hmset`; create function redis_hmset returns string soname 'mysqludf-redis.so';   
+  DROP FUNCTION IF EXISTS `redis_hdel`; create function redis_hdel returns string soname 'mysqludf-redis.so';
+  DROP FUNCTION IF EXISTS `redis_sadd`; create function redis_sadd returns string soname 'mysqludf-redis.so';
+  DROP FUNCTION IF EXISTS `redis_srem`; create function redis_srem returns string soname 'mysqludf-redis.so';
+  DROP FUNCTION IF EXISTS `redis_zadd`; create function redis_zadd returns string soname 'mysqludf-redis.so';
+  DROP FUNCTION IF EXISTS `redis_zrem`; create function redis_zrem returns string soname 'mysqludf-redis.so';
 
-  DROP FUNCTION IF EXISTS `redis_sadd`; create function redis_sadd returns string soname 'myredis.so';
-  DROP FUNCTION IF EXISTS `redis_srem`; create function redis_srem returns string soname 'myredis.so';
-  DROP FUNCTION IF EXISTS `redis_zadd`; create function redis_zadd returns string soname 'myredis.so';
-  DROP FUNCTION IF EXISTS `redis_zrem`; create function redis_zrem returns string soname 'myredis.so';
+  DROP FUNCTION IF EXISTS `lib_mysqludf_json_info`; create function lib_mysqludf_json_info returns string soname 'mysqludf-json.so';     
+  DROP FUNCTION IF EXISTS `json_array`; create function json_array returns string soname 'mysqludf-json.so';     
+  DROP FUNCTION IF EXISTS `json_members`; create function json_members returns string soname 'mysqludf-json.so';     
+  DROP FUNCTION IF EXISTS `json_object`; create function json_object returns string soname 'mysqludf-json.so';     
+  DROP FUNCTION IF EXISTS `json_values`; create function json_values returns string soname 'mysqludf-json.so';     
+
 
 
 ## 测试UDF
