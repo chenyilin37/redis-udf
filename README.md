@@ -6,6 +6,22 @@ mysql:5.6+
 
 dependence : boost mysql
 
+# Docker安装MySQL
+ 下载：https://github.com/chenyilin37/redis-udf/blob/master/Dockerfile
+ docker build -t mysql-5.7-with-redis-udf .
+
+
+ docker run -d -p 3306:3306 --privileged=true -v /Users/Shared/mysql/data:/var/lib/mysql \
+	 -e MYSQL_ROOT_PASSWORD=123456 \
+	 -e MYSQL_USER=chenyl \
+	 -e MYSQL_PASSWORD=123456 \
+	 -e REDIS_HOST=192.168.1.8 \
+	 --name macmysql mysql-5.7-with-redis-udf
+ 
+ docker run -it --link macmysql:mysql --rm mysql-5.7-with-redis-udf sh -c 'bash'
+
+
+# 手动安装
 ## 安装boost
 ### Ubuntu/Debian/Linux Mint
   sudo apt-get install libboost-all-dev
