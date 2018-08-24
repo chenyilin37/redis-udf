@@ -68,7 +68,7 @@ public:
     size_t n = data.size();
     for (size_t i = 0; i < n; ++i)
     {
-      buffer_ << "\"" << data[i]<< "\"";
+      buffer_ << "'" << data[i]<< "'";
       if (i < n - 1)
           buffer_ << " ";
     }

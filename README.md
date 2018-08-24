@@ -7,9 +7,25 @@ mysql:5.6+
 dependence : boost mysql
 
 # Docker安装MySQL
+## 创建镜像
  下载：https://github.com/chenyilin37/redis-udf/blob/master/Dockerfile
- docker build -t mysql-5.7-with-redis-udf .
+ docker build -t goas/mysql-with-redis-udf:5.7 .
 
+tar -zcvf  mysqludf-deps.tar.gz  \
+     /usr/lib/mysql/plugin/mysqludf-redis.so \
+     /usr/lib/mysql/plugin/mysqludf-json.so \
+     /usr/lib/x86_64-linux-gnu/libboost_serialization.so.1.62.0 \
+     /usr/lib/x86_64-linux-gnu/libboost_system.so.1.62.0 \
+     /usr/lib/x86_64-linux-gnu/libboost_thread.so.1.62.0 \
+     /usr/lib/x86_64-linux-gnu/libstdc++.so.6 \
+     /lib/x86_64-linux-gnu/libm.so.6 \
+     /lib/x86_64-linux-gnu/libgcc_s.so.1 \
+     /lib/x86_64-linux-gnu/libc.so.6 \
+     /lib/x86_64-linux-gnu/librt.so.1 \
+     /lib/x86_64-linux-gnu/libpthread.so.0
+     
+
+## Docker安装MySQL
 
  docker run -d -p 3306:3306 --privileged=true -v /Users/Shared/mysql/data:/var/lib/mysql \
 	 -e MYSQL_ROOT_PASSWORD=123456 \
@@ -18,7 +34,7 @@ dependence : boost mysql
 	 -e REDIS_HOST=192.168.1.8 \
 	 --name macmysql mysql-5.7-with-redis-udf
  
- docker run -it --link macmysql:mysql --rm mysql-5.7-with-redis-udf sh -c 'bash'
+ docker run -it --link macmysql:mysql --rm goas/mysql-with-redis-udf:5.7 sh -c 'bash'
 
 
 # 手动安装
