@@ -29,9 +29,4 @@ RUN apt-get update \
     && rm -rf * \
     && apt-get autoremove -y && apt-get autoclean -y \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
-    && tar -zcvf mysqludf-redis.tar.gz \
-     /usr/lib/mysql/plugin/mysqludf-redis.so \
-     /usr/lib/mysql/plugin/mysqludf-json.so \
-     /usr/lib/x86_64-linux-gnu/libboost_serialization.so.1.62.0 \
-     /usr/lib/x86_64-linux-gnu/libboost_system.so.1.62.0 \
-     /usr/lib/x86_64-linux-gnu/libboost_thread.so.1.62.0 
+    && tar -zcvf mysqludf-redis.tar.gz /usr/lib/mysql/plugin/mysqludf-redis.so /usr/lib/mysql/plugin/mysqludf-json.so /usr/lib/x86_64-linux-gnu/libboost_serialization.so.1.62.0 /usr/lib/x86_64-linux-gnu/libboost_system.so.1.62.0 /usr/lib/x86_64-linux-gnu/libboost_thread.so.1.62.0 
