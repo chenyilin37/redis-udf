@@ -13,6 +13,9 @@ dependence : boost mysql
  cd /docker/prebuild
  docker build -t goas/mysql-with-redis-udf:5.7 .
 
+在容器中，执行：
+ ldd mysqludf-redis.so
+ 
 tar -zcvf  mysqludf-deps.tar.gz  \
      /usr/lib/mysql/plugin/mysqludf-redis.so \
      /usr/lib/mysql/plugin/mysqludf-json.so \
@@ -47,31 +50,62 @@ docker pull goas/mysql-with-redis-udf:5.7
 ### Mac
   brew install boost
 
+## 安装mysql
+    sudo apt-get update #更新软件库
+    sudo apt-get install mysql-server #安装mysql,期间如果要求输入密码， 那就输入吧. 
 
-sudo apt-get update #更新软件库
-sudo apt-get install mysql-server #安装mysql,期间如果要求输入密码， 那就输入吧. 
-sudo mysql -u root -p #登录mysql查看是否安装成功
+### 开启mysql远程访问
+    修改mysql配置，允许远程登录
+    $ sudo vim /etc/mysql/mariadb.conf.d/50-server.cnf
+    #将bind-address这行注释掉,然后重启
 
+### 设置root账号可以远程登录
+
+    sudo mysql -u root -p #登录mysql查看是否安装成功
+
+    use mysql;
+    GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root账号密码' WITH GRANT OPTION;
+    flush privileges;
+
+    $ sudo /etc/init.d/mysql restart
+
+    然后就可以使用其他客户端直接连接了
+    
+    
 ## 添加mysql.h头文件
    安装mysql后，不一定有mysql.h头文件，需要另行安装；
 ### ubuntu下   
-   audo apt-get install libmysqlclient-dev
+   sudo apt-get install default-libmysqlclient-dev
 
 ### centos下 :
    yum install mysql-devel
 
 ## 编译
-   g++ -shared -o myredis-udf.so -fPIC -I /usr/include/mysql -l boost_serialization -l boost_system -l boost_thread  anet.c redis_client.cpp redis_udf.cpp
+   g++ -shared -o mysqludf-redis.so -fPIC -I /usr/include/mysql -l boost_serialization -l boost_system -l boost_thread  anet.c redis_client.cpp redis_udf.cpp
 
 
 ## 将编译出的mysqludf-redis.so文件拷贝到mysql的插件目录下并授权
-   sudo cp myredis-udf.so /usr/lib/mysql/plugin/ & sudo chmod 777 /usr/lib/mysql/plugin/myredis-udf.so
+   sudo cp mysqludf-redis.so /usr/lib/mysql/plugin/ & sudo chmod 777 /usr/lib/mysql/plugin/mysqludf-redis.so
+
+  对mariadb：
+  sudo cp mysqludf-redis.so /usr/lib/arm-linux-gnueabihf/mariadb18/plugin/ & sudo chmod 777 /usr/lib/arm-linux-gnueabihf/mariadb18/plugin/mysqludf-redis.so
+
+    mariadb的插件目录，登录MySQL后，SHOW VARIABLES LIKE 'plugin_dir';
+    
+    MariaDB [(none)]> SHOW VARIABLES LIKE 'plugin_dir';
+    +---------------+------------------------------------------------+
+    | Variable_name | Value                                          |
+    +---------------+------------------------------------------------+
+    | plugin_dir    | /usr/lib/arm-linux-gnueabihf/mariadb18/plugin/ |
+    +---------------+------------------------------------------------+
+    1 row in set (0.01 sec)
+
 
 ## 设置环境变量
    在/etc/profile中，添加如下语句：
 
    export REDIS_HOST=<缺省：localhost>
-   export REDID_PASS=<缺省：foobared>
+   export REDIS_AUTH=<缺省：foobared>
 
 执行下列命令，使生效：
    source /etc/profile

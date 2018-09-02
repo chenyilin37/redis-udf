@@ -68,7 +68,7 @@ public:
     size_t n = data.size();
     for (size_t i = 0; i < n; ++i)
     {
-      buffer_ << "\"" << data[i]<< "\"";
+      buffer_ << " '" << data[i]<< "'";
       if (i < n - 1)
           buffer_ << " ";
     }
@@ -414,8 +414,8 @@ RedisClient *init_client_if_isnull()
 {
     if(!_client){
         const char* c_host = getenv("REDIS_HOST"); // 获取操作系统变量
-        const char * c_pass = getenv("REDID_PASS");
-        //string_type host = "changhua0208.cn";
+        const char* c_pass = getenv("REDIS_AUTH");
+        
         if(!c_host)
             c_host = "localhost";
         _client = new RedisClient(c_host,6379);
