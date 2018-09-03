@@ -6,7 +6,7 @@ RUN apt-get update \
     && apt-get upgrade -y \
     \
     && echo "install tools and repos" \
-    && apt-get install -y build-essential libboost-all-dev libmysqlclient-dev \
+    && apt-get install -y git build-essential libboost-all-dev libmysqlclient-dev \
 	  \
     && echo "install mysqludf-redis" \
     && cd ~ \
