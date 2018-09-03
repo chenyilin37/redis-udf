@@ -6,6 +6,16 @@ mysql:5.6+
 
 dependence : boost mysql
 
+# Docker安装Redis
+docker pull redis
+docker run --name myredis -p 6379:6379 \
+    -v /Users/Shared/redis/data:/data \
+    -v /Users/Shared/redis/redis.conf:/usr/local/etc/redis/redis.conf \
+    -d redis
+
+docker run -it --link myredis:redis --rm redis redis-cli -h redis -p 6379
+
+
 # Docker安装MySQL
 ## 创建镜像
 ### 预构建
@@ -29,37 +39,38 @@ tar -zcvf  mysqludf-deps.tar.gz  \
  docker build -t goas/mysql-with-redis-udf:5.7 .
  docker push goas/mysql-with-redis-udf:5.7
 
-## Docker安装MySQL
-docker pull goas/mysql-with-redis-udf:5.7
+## 安装MySQL
+ docker pull goas/mysql-with-redis-udf:5.7
 
  docker run -d -p 3306:3306 --privileged=true -v /Users/Shared/mysql/data:/var/lib/mysql \
-	 -e MYSQL_ROOT_PASSWORD=123456 \
+	 -e MYSQL_ROOT_PASSWORD=chenyl \
 	 -e MYSQL_USER=chenyl \
 	 -e MYSQL_PASSWORD=123456 \
 	 -e REDIS_HOST=192.168.1.8 \
+         -e REDIS_AUTH=foobared \
 	 --name macmysql goas/mysql-with-redis-udf:5.7
  
  docker run -it --link macmysql:mysql --rm goas/mysql-with-redis-udf:5.7 sh -c 'bash'
 
 
-# 手动安装
-## 安装boost
-### Ubuntu/Debian/Linux Mint
+## 手动安装
+### 安装boost
+#### Ubuntu/Debian/Linux Mint
   sudo apt-get install libboost-all-dev
 
-### Mac
+#### Mac
   brew install boost
 
-## 安装mysql
+### 安装mysql
     sudo apt-get update #更新软件库
     sudo apt-get install mysql-server #安装mysql,期间如果要求输入密码， 那就输入吧. 
 
-### 开启mysql远程访问
+#### 开启mysql远程访问
     修改mysql配置，允许远程登录
     $ sudo vim /etc/mysql/mariadb.conf.d/50-server.cnf
     #将bind-address这行注释掉,然后重启
 
-### 设置root账号可以远程登录
+#### 设置root账号可以远程登录
 
     sudo mysql -u root -p #登录mysql查看是否安装成功
 
@@ -72,7 +83,7 @@ docker pull goas/mysql-with-redis-udf:5.7
     然后就可以使用其他客户端直接连接了
     
     
-## 添加mysql.h头文件
+### 添加mysql.h头文件
    安装mysql后，不一定有mysql.h头文件，需要另行安装；
 ### ubuntu下   
    sudo apt-get install default-libmysqlclient-dev
