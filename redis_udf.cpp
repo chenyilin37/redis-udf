@@ -517,3 +517,39 @@ extern "C" my_bool redis_getset_init(UDF_INIT *initid, UDF_ARGS *args, char *mes
     initid->ptr       = NULL;
     return 0;
 }
+
+extern "C" long long test_add(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error)
+{
+    int a = *((long long *)args->args[0]);
+    int b = *((long long *)args->args[1]);
+    return a + b;
+}
+
+extern "C" my_bool test_add_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
+    return 0;
+}
+
+
+extern "C" char *show_envs(UDF_INIT *initid, UDF_ARGS *args, char *result, unsigned long *length, char *is_null, char *error){
+	memset(result,0,sizeof(result));
+   try{
+   	const char* ret = getenv(args->args[0]);
+   	if(!ret)
+   		ret = "NULL";
+   		
+   	STRING_RESULT(ret);
+   	
+   	return result;
+ 	} catch(redis_error & e){
+ 		string errMsg(e);
+ 		STRING_RESULT(errMsg);
+ 		return result;
+ 	}
+  
+}
+
+extern "C" my_bool show_envs_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
+{
+    return 0;
+}

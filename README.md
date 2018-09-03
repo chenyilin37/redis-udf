@@ -14,10 +14,10 @@ dependence : boost mysql
  docker build -t goas/mysql-with-redis-udf:5.7 .
 
 在容器中，执行：
- ldd mysqludf-redis.so
+ ldd mysqludf_redis.so
  
 tar -zcvf  mysqludf-deps.tar.gz  \
-     /usr/lib/mysql/plugin/mysqludf-redis.so \
+     /usr/lib/mysql/plugin/mysqludf_redis.so \
      /usr/lib/mysql/plugin/mysqludf-json.so \
      /usr/lib/x86_64-linux-gnu/libboost_serialization.so.1.62.0 \
      /usr/lib/x86_64-linux-gnu/libboost_system.so.1.62.0 \
@@ -81,14 +81,26 @@ docker pull goas/mysql-with-redis-udf:5.7
    yum install mysql-devel
 
 ## 编译
-   g++ -shared -o mysqludf-redis.so -fPIC -I /usr/include/mysql -l boost_serialization -l boost_system -l boost_thread  anet.c redis_client.cpp redis_udf.cpp
+   g++ -shared -o mysqludf_redis.so -fPIC -I /usr/include/mysql -l boost_serialization -l boost_system -l boost_thread  anet.c redis_client.cpp redis_udf.cpp
+
+## 打包备份
+    检查依赖关系：
+    ldd mysqludf_redis.so
+
+    将UDF及依赖一起打包，将来备用，就不必变异
+    tar -zcvf  mysqludf-5.7-rpi3.tar.gz  \
+    /usr/lib/mysql/plugin/mysqludf_redis.so \
+    /usr/lib/mysql/plugin/mysqludf-json.so \
+    /usr/lib/x86_64-linux-gnu/libboost_serialization.so.1.62.0 \
+    /usr/lib/x86_64-linux-gnu/libboost_system.so.1.62.0 \
+    /usr/lib/x86_64-linux-gnu/libboost_thread.so.1.62.0 
 
 
-## 将编译出的mysqludf-redis.so文件拷贝到mysql的插件目录下并授权
-   sudo cp mysqludf-redis.so /usr/lib/mysql/plugin/ & sudo chmod 777 /usr/lib/mysql/plugin/mysqludf-redis.so
+## 将编译出的mysqludf_redis.so文件拷贝到mysql的插件目录下并授权
+   sudo cp mysqludf_redis.so /usr/lib/mysql/plugin/ & sudo chmod 777 /usr/lib/mysql/plugin/mysqludf_redis.so
 
   对mariadb：
-  sudo cp mysqludf-redis.so /usr/lib/arm-linux-gnueabihf/mariadb18/plugin/ & sudo chmod 777 /usr/lib/arm-linux-gnueabihf/mariadb18/plugin/mysqludf-redis.so
+  sudo cp mysqludf_redis.so /usr/lib/arm-linux-gnueabihf/mariadb18/plugin/ & sudo chmod 777 /usr/lib/arm-linux-gnueabihf/mariadb18/plugin/mysqludf_redis.so
 
     mariadb的插件目录，登录MySQL后，SHOW VARIABLES LIKE 'plugin_dir';
     
@@ -111,21 +123,26 @@ docker pull goas/mysql-with-redis-udf:5.7
    source /etc/profile
 
 
+
 ## 在mysql中，执行下列脚本建立自定义函数
 
-  DROP FUNCTION IF EXISTS `redis_set`; create function redis_set returns string soname 'mysqludf-redis.so';   
-  DROP FUNCTION IF EXISTS `redis_get`; create function redis_get returns string soname 'mysqludf-redis.so';   
-  DROP FUNCTION IF EXISTS `redis_del`; create function redis_del returns string soname 'mysqludf-redis.so';   
-  DROP FUNCTION IF EXISTS `redis_getset`; create function redis_getset returns string soname 'mysqludf-redis.so';   
-  DROP FUNCTION IF EXISTS `redis_hset`; create function redis_hset returns string soname 'mysqludf-redis.so';   
-  DROP FUNCTION IF EXISTS `redis_hget`; create function redis_hget returns string soname 'mysqludf-redis.so';   
-  DROP FUNCTION IF EXISTS `redis_hmget`; create function redis_hmget returns string soname 'mysqludf-redis.so';   
-  DROP FUNCTION IF EXISTS `redis_hmset`; create function redis_hmset returns string soname 'mysqludf-redis.so';    
-  DROP FUNCTION IF EXISTS `redis_hdel`; create function redis_hdel returns string soname 'mysqludf-redis.so';   
-  DROP FUNCTION IF EXISTS `redis_sadd`; create function redis_sadd returns string soname 'mysqludf-redis.so';   
-  DROP FUNCTION IF EXISTS `redis_srem`; create function redis_srem returns string soname 'mysqludf-redis.so';    
-  DROP FUNCTION IF EXISTS `redis_zadd`; create function redis_zadd returns string soname 'mysqludf-redis.so';    
-  DROP FUNCTION IF EXISTS `redis_zrem`; create function redis_zrem returns string soname 'mysqludf-redis.so';     
+
+  DROP FUNCTION IF EXISTS `test_add`; create function test_add returns INTEGER soname 'mysqludf_redis.so';   
+  DROP FUNCTION IF EXISTS `show_envs`; create function show_envs returns string soname 'mysqludf_redis.so';   
+
+  DROP FUNCTION IF EXISTS `redis_set`; create function redis_set returns string soname 'mysqludf_redis.so';   
+  DROP FUNCTION IF EXISTS `redis_get`; create function redis_get returns string soname 'mysqludf_redis.so';   
+  DROP FUNCTION IF EXISTS `redis_del`; create function redis_del returns string soname 'mysqludf_redis.so';   
+  DROP FUNCTION IF EXISTS `redis_getset`; create function redis_getset returns string soname 'mysqludf_redis.so';   
+  DROP FUNCTION IF EXISTS `redis_hset`; create function redis_hset returns string soname 'mysqludf_redis.so';   
+  DROP FUNCTION IF EXISTS `redis_hget`; create function redis_hget returns string soname 'mysqludf_redis.so';   
+  DROP FUNCTION IF EXISTS `redis_hmget`; create function redis_hmget returns string soname 'mysqludf_redis.so';   
+  DROP FUNCTION IF EXISTS `redis_hmset`; create function redis_hmset returns string soname 'mysqludf_redis.so';    
+  DROP FUNCTION IF EXISTS `redis_hdel`; create function redis_hdel returns string soname 'mysqludf_redis.so';   
+  DROP FUNCTION IF EXISTS `redis_sadd`; create function redis_sadd returns string soname 'mysqludf_redis.so';   
+  DROP FUNCTION IF EXISTS `redis_srem`; create function redis_srem returns string soname 'mysqludf_redis.so';    
+  DROP FUNCTION IF EXISTS `redis_zadd`; create function redis_zadd returns string soname 'mysqludf_redis.so';    
+  DROP FUNCTION IF EXISTS `redis_zrem`; create function redis_zrem returns string soname 'mysqludf_redis.so';     
 
   DROP FUNCTION IF EXISTS `lib_mysqludf_json_info`; create function lib_mysqludf_json_info returns string soname 'mysqludf-json.so';     
   DROP FUNCTION IF EXISTS `json_array`; create function json_array returns string soname 'mysqludf-json.so';     
@@ -204,6 +221,18 @@ docker pull goas/mysql-with-redis-udf:5.7
     8) "F"    
     9) "department"    
     10) "SS3-205"    
+ 
+## SD卡镜像
+### 备份SD卡
+     使用 dd 命令可以直接备份SD卡。这里树莓派的SD卡的路径是 /dev/sdc1 和 /dev/sdc2 ，所以备份整个SD卡的路径就是 /dev/sdc。
+     输入备份命令：
+     $ sudo dd if=/dev/sdc | gzip>/home/lixinxing/raspberry.gz
+ 
+### 写入备份文件
+     $ sudo gzip -dc /home/lixinxing/raspberry.gz | sudo dd of=/dev/sdc
+     其中备份文件的位置、文件名和 SD卡的路径要根据实际选择。
+     这样就将备份还原到树莓派了，可以将SD卡插入树莓派启动！
+ 
  
 ## 常见问题
 ### Broken pipe 

@@ -417,10 +417,12 @@ RedisClient *init_client_if_isnull()
         const char* c_pass = getenv("REDIS_AUTH");
         
         if(!c_host)
-            c_host = "localhost";
+            c_host = "192.168.1.81";
         _client = new RedisClient(c_host,6379);
-        if(c_pass)
-          _client->auth(c_pass);
+        
+        if(!c_pass)
+            c_pass="foobared";
+        _client->auth(c_pass);
     }
     return _client;
 }
