@@ -7,14 +7,21 @@ mysql:5.6+
 dependence : boost mysql
 
 # Docker安装Redis
-docker pull redis
-docker run --name myredis -p 6379:6379 \
-    -v /Users/Shared/redis/data:/data \
-    -v /Users/Shared/redis/redis.conf:/usr/local/etc/redis/redis.conf \
-    -d redis
+    docker pull redis
 
-docker run -it --link myredis:redis --rm redis redis-cli -h redis -p 6379
+    docker run -d -p 6379:6379 \
+        -v /Users/Shared/redis/data:/data \
+        -v /Users/Shared/redis/redis.conf:/usr/local/etc/redis/redis.conf \
+        --restart=always \
+        --name myredis redis \
+        redis-server /usr/local/etc/redis/redis.conf
+        
+         
+   启动redis-cli
+    docker run -it --link myredis:redis --rm redis redis-cli -h redis -p 6379
 
+   进入容器
+   docker run -it --link myredis:redis --rm redis sh -c 'bash'
 
 # Docker安装MySQL
 ## 创建镜像
@@ -48,6 +55,7 @@ tar -zcvf  mysqludf-deps.tar.gz  \
 	 -e MYSQL_PASSWORD=123456 \
 	 -e REDIS_HOST=192.168.1.8 \
          -e REDIS_AUTH=foobared \
+         --restart=always \
 	 --name macmysql goas/mysql-with-redis-udf:5.7
  
  docker run -it --link macmysql:mysql --rm goas/mysql-with-redis-udf:5.7 sh -c 'bash'
@@ -109,7 +117,10 @@ tar -zcvf  mysqludf-deps.tar.gz  \
 
 ## 将编译出的mysqludf_redis.so文件拷贝到mysql的插件目录下并授权
    sudo cp mysqludf_redis.so /usr/lib/mysql/plugin/ & sudo chmod 777 /usr/lib/mysql/plugin/mysqludf_redis.so
-
+  
+  启动 mysqld ：/etc/init.d/mysql restart
+  
+  
   对mariadb：
   sudo cp mysqludf_redis.so /usr/lib/arm-linux-gnueabihf/mariadb18/plugin/ & sudo chmod 777 /usr/lib/arm-linux-gnueabihf/mariadb18/plugin/mysqludf_redis.so
 
@@ -155,11 +166,6 @@ tar -zcvf  mysqludf-deps.tar.gz  \
   DROP FUNCTION IF EXISTS `redis_zadd`; create function redis_zadd returns string soname 'mysqludf_redis.so';    
   DROP FUNCTION IF EXISTS `redis_zrem`; create function redis_zrem returns string soname 'mysqludf_redis.so';     
 
-  DROP FUNCTION IF EXISTS `lib_mysqludf_json_info`; create function lib_mysqludf_json_info returns string soname 'mysqludf-json.so';     
-  DROP FUNCTION IF EXISTS `json_array`; create function json_array returns string soname 'mysqludf-json.so';     
-  DROP FUNCTION IF EXISTS `json_members`; create function json_members returns string soname 'mysqludf-json.so';     
-  DROP FUNCTION IF EXISTS `json_object`; create function json_object returns string soname 'mysqludf-json.so';     
-  DROP FUNCTION IF EXISTS `json_values`; create function json_values returns string soname 'mysqludf-json.so';     
 
 
 
@@ -246,6 +252,19 @@ tar -zcvf  mysqludf-deps.tar.gz  \
  
  
 ## 常见问题
+### 时区时钟同步
+    MySQL服务器、Redis服务器、应用服务器时区时钟要同步，安装时注意！
+    
+    Dockerfile 时区设置
+    RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+    RUN echo 'Asia/Shanghai' >/etc/timezone
+
+    Java 时区设置
+    注意,如果能确保所在主机/etc/timezone内容正确,则不需要再对Java时区进行设置
+    
+    TimeZone tz = TimeZone.getTimeZone("Asia/Shanghai");
+    TimeZone.setDefault(tz);        
+        
 ### Broken pipe 
    查看redis.conf中timeout参数，如果没有设置或设置了数值，都改为0；
    

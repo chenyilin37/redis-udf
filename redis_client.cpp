@@ -44,6 +44,30 @@ string_type & rtrim(string & str, const string & ws = whitespace)
   return str;
 }
 
+//************************************
+// Method:    string_replace
+// FullName:  string_replace
+// Access:    public
+// Returns:   void
+// Qualifier: 把字符串的strsrc替换成strdst
+// Parameter: std::string & strBig
+// Parameter: const std::string & strsrc
+// Parameter: const std::string & strdst
+//************************************
+void string_replace(string_type &strBig, const string_type &strsrc, const string_type &strdst)
+{
+    string_type::size_type pos = 0;
+    string_type::size_type srclen = strsrc.size();
+    string_type::size_type dstlen = strdst.size();
+    
+    while( (pos=strBig.find(strsrc, pos)) != string_type::npos )
+    {
+        strBig.replace( pos, srclen, strdst );
+        pos += dstlen;
+    }
+}
+
+
 class makecmd
 {
 public:
@@ -54,21 +78,23 @@ public:
       buffer_ << " ";
   }
 
-  template <typename T> 
-  makecmd & operator<<(T const & datum)
+  makecmd  & operator<<(const string_type & datum)
   {
-    buffer_ <<" '" << datum << "'";
+  	string_type buf = datum;
+    string_replace(buf, "'", "\\'");
+    buffer_ <<" '" << buf << "'";
     return *this;
   }
 
-  template <typename T>
-  makecmd & operator<<(const std::vector<T> & data) 
+  makecmd & operator<<(const string_vector & data) 
   {
   	buffer_ << " ";
     size_t n = data.size();
     for (size_t i = 0; i < n; ++i)
     {
-      buffer_ << " '" << data[i]<< "'";
+  		string_type buf = data[i];
+    	string_replace(buf, "'", "\\'");
+      buffer_ << " '" << buf << "'";
       if (i < n - 1)
           buffer_ << " ";
     }
@@ -417,7 +443,8 @@ RedisClient *init_client_if_isnull()
         const char* c_pass = getenv("REDIS_AUTH");
         
         if(!c_host)
-            c_host = "192.168.1.81";
+            c_host = "127.0.0.1";
+            
         _client = new RedisClient(c_host,6379);
         
         if(c_pass)
