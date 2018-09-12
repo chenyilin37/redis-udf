@@ -101,6 +101,7 @@ class RedisClient {
 };
 
 static RedisClient *_client = NULL;
+static int _client_status = 0;
 
 RedisClient *init_client_if_isnull();
 

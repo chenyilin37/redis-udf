@@ -78,6 +78,7 @@ public:
       buffer_ << " ";
   }
 
+  //template <typename T> 
   makecmd  & operator<<(const string_type & datum)
   {
   	string_type buf = datum;
@@ -86,6 +87,7 @@ public:
     return *this;
   }
 
+  // template <typename T>
   makecmd & operator<<(const string_vector & data) 
   {
   	buffer_ << " ";
@@ -145,8 +147,10 @@ RedisClient::RedisClient(const string_type & host, unsigned int port)
 {
 	char err[ANET_ERR_LEN];
     socket_ = anetTcpConnect(err, const_cast<char*>(host.c_str()), port);
-    if (socket_ == ANET_ERR) 
+    if (socket_ == ANET_ERR) {
+    	_client_status = 1;
       throw connection_error(err);
+    }
     anetTcpNoDelay(NULL, socket_);
 #ifdef DEBUG
 		std::cout<<"open redis success"<<std::endl;
@@ -333,8 +337,8 @@ void RedisClient::send_(const string_type & msg)
 #endif
 
     if (anetWrite(socket_, const_cast<char *>(msg.data()), msg.size()) == -1){
-        
-        throw connection_error(strerror(errno));
+    	_client_status = 1;
+      throw connection_error(strerror(errno));
     }
 }
 
@@ -346,9 +350,9 @@ int_type RedisClient::recv_bulk_reply_(char prefix)
   std::cout<<"line is "<<line<<std::endl;
 #endif
 
-  if (line[0] != prefix)
+  if (line[0] != prefix){
     throw protocol_error("unexpected prefix for bulk reply");
-
+  }
   return value_from_string<int_type>(line.substr(1));
 }
 
@@ -374,9 +378,10 @@ string_type RedisClient::read_line(int socket, ssize_t max_size)
     do bytes_received = recv(socket, buffer, buffer_size, MSG_PEEK);
     while (bytes_received < 0 && errno == EINTR);
 
-    if (bytes_received == 0)
+    if (bytes_received == 0){
+    	_client_status = 1;
       throw connection_error("connection was closed");
-
+    }
     // Some data is available; Length might be < buffer_size.
     // Look for newline in whatever was read though.
 
@@ -424,9 +429,11 @@ string_type RedisClient::read_n(int socket, ssize_t n)
     do bytes_received = recv(socket, bp, n - (bp - buffer), 0);
     while (bytes_received < 0 && errno == EINTR);
 
-    if (bytes_received == 0)
+    if (bytes_received == 0){
+    	_client_status = 1;
       throw connection_error("connection was closed");
-
+    }
+    
     bytes_read += bytes_received;
     bp         += bytes_received;
   }
@@ -438,17 +445,23 @@ string_type RedisClient::read_n(int socket, ssize_t n)
 
 RedisClient *init_client_if_isnull()
 {
-    if(!_client){
-        const char* c_host = getenv("REDIS_HOST"); // 获取操作系统变量
-        const char* c_pass = getenv("REDIS_AUTH");
-        
-        if(!c_host)
-            c_host = "127.0.0.1";
-            
-        _client = new RedisClient(c_host,6379);
-        
-        if(c_pass)
-          _client->auth(c_pass);
-    }
-    return _client;
+	if(_client_status>0){
+		delete _client;
+		_client = NULL;
+		_client_status = 0;
+	}
+
+  if(!_client){
+      const char* c_host = getenv("REDIS_HOST"); // 获取操作系统变量
+      const char* c_pass = getenv("REDIS_AUTH");
+      
+      if(!c_host)
+          c_host = "127.0.0.1";
+          
+      _client = new RedisClient(c_host,6379);
+      
+      if(c_pass)
+        _client->auth(c_pass);
+  }
+  return _client;
 }

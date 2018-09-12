@@ -26,30 +26,33 @@ dependence : boost mysql
 # Docker安装MySQL
 ## 创建镜像
 ### 预构建
- 下载：https://github.com/chenyilin37/redis-udf/blob/master/Dockerfile
- cd /docker/prebuild
- docker build -t goas/mysql-with-redis-udf:5.7 .
+     下载：https://github.com/chenyilin37/redis-udf/blob/master/Dockerfile
+     cd /docker/prebuild
+     docker build -t goas/mysql-with-redis-udf:5.7 .
 
-在容器中，执行：
- ldd mysqludf_redis.so
- 
-tar -zcvf  mysqludf-deps.tar.gz  \
-     /usr/lib/mysql/plugin/mysqludf_redis.so \
-     /usr/lib/mysql/plugin/mysqludf-json.so \
-     /usr/lib/x86_64-linux-gnu/libboost_serialization.so.1.62.0 \
-     /usr/lib/x86_64-linux-gnu/libboost_system.so.1.62.0 \
-     /usr/lib/x86_64-linux-gnu/libboost_thread.so.1.62.0 
+     在容器中，执行：
+     ldd mysqludf_redis.so
      
+    tar -zcvf mysqludf-redis.tar.gz  \
+         /usr/lib/mysql/plugin/mysqludf_redis.so \
+         /usr/lib/mysql/plugin/mysqludf-json.so \
+         /usr/lib/x86_64-linux-gnu/libboost_serialization.so.1.62.0 \
+         /usr/lib/x86_64-linux-gnu/libboost_system.so.1.62.0 \
+         /usr/lib/x86_64-linux-gnu/libboost_thread.so.1.62.0 
+         
+    将mysqludf-redis.tar.gz从容器中拷出
+    docker cp macmysql：/mysqludf-redis.tar.gz .
 ### 正式构建
- cd /docker
- 编辑mysqld.cnf
- docker build -t goas/mysql-with-redis-udf:5.7 .
- docker push goas/mysql-with-redis-udf:5.7
+     cd /docker
+     编辑mysqld.cnf
+     docker build -t goas/mysql-with-redis-udf:5.7 .
+     docker push goas/mysql-with-redis-udf:5.7
 
 ## 安装MySQL
  docker pull goas/mysql-with-redis-udf:5.7
 
- docker run -d -p 3306:3306 --privileged=true -v /Users/Shared/mysql/data:/var/lib/mysql \
+ docker run -d -p 3306:3306 --privileged=true \
+         -v /Users/Shared/mysql/data:/var/lib/mysql \
 	 -e MYSQL_ROOT_PASSWORD=chenyl \
 	 -e MYSQL_USER=chenyl \
 	 -e MYSQL_PASSWORD=123456 \
@@ -273,6 +276,6 @@ tar -zcvf  mysqludf-deps.tar.gz  \
 ### connection was closed
 
 ## TODO
-引号兼容
+...
 
 
